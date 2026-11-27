@@ -27,14 +27,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lloydsbyte.giftlist.data.GiftItem
 import com.lloydsbyte.giftlist.data.UiState
-import com.lloydsbyte.giftlist.ui.theme.WrappedGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -149,8 +147,8 @@ private fun GiftCard(
                     onClick = onToggleArrived,
                     label = { Text("Arrived") },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedContainerColor = MaterialTheme.colorScheme.secondary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onSecondary,
                     ),
                 )
                 FilterChip(
@@ -158,8 +156,8 @@ private fun GiftCard(
                     onClick = onToggleWrapped,
                     label = { Text("Wrapped") },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = WrappedGreen,
-                        selectedLabelColor = Color.White,
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 )
             }

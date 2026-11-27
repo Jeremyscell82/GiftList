@@ -15,7 +15,7 @@ Enter it on the lock screen to access your lists. The app automatically re-locks
 - **Passcode lock** — full-screen 4-digit pin pad with shake-on-error
 - **Two gift lists** in tabs (Alex & Alyssa by default) — list names are fully editable in Settings (add / rename / delete)
 - **Gift fields**: To, From, Item name, Shipper, plus Arrived & Wrapped toggles
-- **Colored status chips**: Arrived = app-blue, Wrapped = green (when selected)
+- **Colored status chips**: Arrived = red, Wrapped = green (the Christmas pair)
 - **Settings**: manage lists, reset all gifts, version info at the bottom
 - **Offline & private** — data is stored locally on device via SharedPreferences; no accounts, no network
 
