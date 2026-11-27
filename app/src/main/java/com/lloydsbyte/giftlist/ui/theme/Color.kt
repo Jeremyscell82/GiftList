@@ -1,7 +1,7 @@
 package com.lloydsbyte.giftlist.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-
 // ── Christmas palette (green primary, red secondary, gold tertiary) ──────────
 
 // Light theme
@@ -48,6 +48,18 @@ val SnowErrorDark = Color(0xFFFFB4AB)
 val SnowErrorContainerDark = Color(0xFF93000A)
 val OnSnowErrorContainerDark = Color(0xFFFFDAD6)
 
+// Deeper greens for the lock-screen gradient (festive, calm).
+val PineDeep = Color(0xFF0E3D22)
+val PineDeepDark = Color(0xFF062114)
+
 /** Chip color for the "Wrapped" toggle (green points + wraps it up). */
 val WrappedGreen = ChristmasGreen
 val WrappedGreenDark = ChristmasGreenDark
+
+/** Vertical pine gradient for the lock screen background. */
+fun pineGradient(dark: Boolean): Brush = Brush.verticalGradient(
+    colors = listOf(
+        if (dark) PineDeepDark else PineDeep,
+        if (dark) Color(0xFF11321F) else Color(0xFF1B6B3A),
+    )
+)

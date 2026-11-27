@@ -1,6 +1,7 @@
 package com.lloydsbyte.giftlist.ui
 
 import android.content.pm.PackageManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,8 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -56,74 +69,89 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                navigationIcon = {
+                title = { Text("Settings", fontWeight = FontWeight.SemiBold) },
+                actions = {
                     TextButton(onClick = onBack) { Text("Done") }
                 },
-                title = { Text("Settings") },
             )
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
             Column {
                 Spacer(Modifier.height(8.dp))
-                SectionTitle("Lists")
-                Spacer(Modifier.height(4.dp))
 
-                if (listNames.isEmpty()) {
-                    Text(
-                        "No lists yet. Tap \"Add list\" to create one.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                } else {
-                    listNames.forEach { name ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(name, style = MaterialTheme.typography.bodyLarge)
-                            Row {
-                                TextButton(onClick = { renameTarget = name }) { Text("Rename") }
-                                TextButton(onClick = { deleteTarget = name }) {
-                                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                // ── Lists card ──
+                SettingsCard(title = "Lists", icon = Icons.Filled.Inventory) {
+                    if (listNames.isEmpty()) {
+                        Text(
+                            "No lists yet. Tap “Add list” to create one.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    } else {
+                        listNames.forEach { name ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Dot()
+                                    Spacer(Modifier.size(10.dp))
+                                    Text(name, style = MaterialTheme.typography.bodyLarge)
+                                }
+                                Row {
+                                    IconButton(onClick = { renameTarget = name }) {
+                                        Icon(Icons.Filled.Edit, contentDescription = "Rename $name")
+                                    }
+                                    IconButton(onClick = { deleteTarget = name }) {
+                                        Icon(Icons.Filled.DeleteOutline, contentDescription = "Delete $name", tint = MaterialTheme.colorScheme.error)
+                                    }
                                 }
                             }
                         }
                     }
+                    Spacer(Modifier.height(4.dp))
+                    Row {
+                        TextButton(onClick = { showAddList = true }) {
+                            Icon(Icons.Outlined.AddCircle, contentDescription = null)
+                            Spacer(Modifier.size(6.dp))
+                            Text("Add list")
+                        }
+                    }
                 }
 
-                Spacer(Modifier.height(8.dp))
-                TextButton(onClick = { showAddList = true }) { Text("+ Add list") }
-
                 Spacer(Modifier.height(16.dp))
-                SectionTitle("Data")
-                Spacer(Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text("Reset all gifts")
-                        Spacer(Modifier.height(2.dp))
-                        Text(
-                            "Removes every item from all lists.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    TextButton(onClick = { confirmReset = true }) {
-                        Text("Reset", color = MaterialTheme.colorScheme.error)
+
+                // ── Data card ──
+                SettingsCard(title = "Data", icon = Icons.Filled.Storage) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text("Reset all gifts", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                "Removes every item from all lists.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        TextButton(onClick = { confirmReset = true }) {
+                            Text("Reset", color = MaterialTheme.colorScheme.error)
+                        }
                     }
                 }
             }
 
             Text(
-                "Version $version",
+                "Gift List · Version $version",
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 24.dp),
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -183,11 +211,34 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
+private fun SettingsCard(
+    title: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    content: @Composable () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.size(8.dp))
+                Text(title, style = MaterialTheme.typography.titleMedium)
+            }
+            Spacer(Modifier.height(10.dp))
+            content()
+        }
+    }
+}
+
+@Composable
+private fun Dot() {
+    Box(
+        modifier = Modifier
+            .size(8.dp)
+            .background(MaterialTheme.colorScheme.primary, androidx.compose.foundation.shape.CircleShape),
     )
 }
 

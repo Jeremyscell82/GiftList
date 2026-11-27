@@ -6,10 +6,14 @@ import androidx.compose.runtime.getValue
 import com.lloydsbyte.giftlist.GiftViewModel
 import com.lloydsbyte.giftlist.data.Screen
 
-/** Top-level router: lock screen takes priority, then the current [Screen]. */
+/**
+ * Top-level router. The lock screen takes priority. The add/edit [Screen] renders as a
+ * bottom sheet *over* the list, so the list always sits underneath it.
+ */
 @Composable
 fun AppRoot(viewModel: GiftViewModel) {
     val state by viewModel.uiState.collectAsState()
+
     when {
         state.isLocked -> LockScreen(onUnlock = viewModel::unlock)
 
@@ -22,21 +26,25 @@ fun AppRoot(viewModel: GiftViewModel) {
             onDeleteList = viewModel::deleteList,
         )
 
-        state.screen == Screen.AddItem -> EditItemScreen(
-            state = state,
-            onSave = viewModel::saveItem,
-            onDelete = viewModel::deleteItem,
-            onCancel = viewModel::backToList,
-        )
-
-        else -> ListScreen(
-            state = state,
-            onSelectList = viewModel::selectList,
-            onAdd = viewModel::openAdd,
-            onEdit = viewModel::openEdit,
-            onToggleArrived = viewModel::toggleArrived,
-            onToggleWrapped = viewModel::toggleWrapped,
-            onOpenSettings = viewModel::openSettings,
-        )
+        // List is always on screen; the edit sheet floats above it when active.
+        else -> {
+            ListScreen(
+                state = state,
+                onSelectList = viewModel::selectList,
+                onAdd = viewModel::openAdd,
+                onEdit = viewModel::openEdit,
+                onToggleArrived = viewModel::toggleArrived,
+                onToggleWrapped = viewModel::toggleWrapped,
+                onOpenSettings = viewModel::openSettings,
+            )
+            if (state.screen == Screen.AddItem) {
+                EditItemScreen(
+                    state = state,
+                    onSave = viewModel::saveItem,
+                    onDelete = viewModel::deleteItem,
+                    onCancel = viewModel::backToList,
+                )
+            }
+        }
     }
 }
