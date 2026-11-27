@@ -3,6 +3,7 @@
 /local.properties
 keystore.properties
 *.jks
+GiftList-*.apk
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
