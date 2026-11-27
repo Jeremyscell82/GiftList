@@ -52,13 +52,13 @@ jobs:
           "$APKSIGNER" verify --print-certs \
             app/build/outputs/apk/release/app-release.apk
 
-      - name: Rename APK to GiftList-<tag>.apk
-        run: cp app/build/outputs/apk/release/app-release.apk "GiftList-${GITHUB_REF_NAME}.apk"
+      - name: Rename APK to GiftList.apk (stable name for latest-release URL)
+        run: cp app/build/outputs/apk/release/app-release.apk "GiftList.apk"
 
       - name: Create GitHub Release with APK
         uses: softprops/action-gh-release@v2
         with:
-          files: GiftList-*.apk
+          files: GiftList.apk
           body: |
             **Default passcode: `2026`**
 
